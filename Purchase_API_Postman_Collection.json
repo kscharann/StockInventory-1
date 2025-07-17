@@ -1,0 +1,288 @@
+{
+  "info": {
+    "name": "Stock Inventory - Purchase API",
+    "description": "Complete Purchase Management API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"role\": [\"mod\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signup"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Purchase Management",
+      "item": [
+        {
+          "name": "Get All Purchases",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases"]
+            }
+          }
+        },
+        {
+          "name": "Get Purchase by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Purchase by PO ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/po/PO-2024-001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "po", "PO-2024-001"]
+            }
+          }
+        },
+        {
+          "name": "Get Purchases by Vendor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/vendor/ABC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "vendor", "ABC"]
+            }
+          }
+        },
+        {
+          "name": "Get Purchases by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/status/PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "status", "PENDING"]
+            }
+          }
+        },
+        {
+          "name": "Get Purchases by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/date-range?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "date-range"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Purchase",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorName\": \"ABC Suppliers\",\n  \"poId\": \"PO-2024-001\",\n  \"productName\": \"Laptop Dell XPS 13\",\n  \"quantity\": 5,\n  \"unitPrice\": 1200.00,\n  \"purchaseDate\": \"2024-01-15\",\n  \"deliveryDate\": \"2024-01-25\",\n  \"paymentStatus\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases"]
+            }
+          }
+        },
+        {
+          "name": "Update Purchase",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorName\": \"XYZ Suppliers\",\n  \"poId\": \"PO-2024-001\",\n  \"productName\": \"Laptop Dell XPS 15\",\n  \"quantity\": 3,\n  \"unitPrice\": 1500.00,\n  \"purchaseDate\": \"2024-01-15\",\n  \"deliveryDate\": \"2024-01-20\",\n  \"paymentStatus\": \"PARTIAL\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Payment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/1/status?status=PAID",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "1", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PAID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Purchase",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/purchases/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "purchases", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

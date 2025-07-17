@@ -1,0 +1,411 @@
+{
+  "info": {
+    "name": "Stock Inventory - Invoice API",
+    "description": "Complete Invoice Management API Collection with Authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "invoiceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testInvoiceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdInvoiceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdInvoiceNumber",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"invoiceuser\",\n  \"email\": \"invoice@example.com\",\n  \"password\": \"password123\",\n  \"role\": [\"mod\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signup"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"invoiceuser\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "    console.log('Token saved:', response.token.substring(0, 20) + '...');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Invoice Management",
+      "item": [
+        {
+          "name": "Get All Invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "if (pm.response.json().length > 0) {",
+                  "    const firstInvoice = pm.response.json()[0];",
+                  "    pm.collectionVariables.set('invoiceId', firstInvoice.id);",
+                  "    pm.collectionVariables.set('testInvoiceId', firstInvoice.invoiceId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Invoice by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/{{invoiceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "{{invoiceId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice by Invoice ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/invoice/12345",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "invoice", "12345"]
+            }
+          }
+        },
+        {
+          "name": "Get Invoices by Client",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/client/ABC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "client", "ABC"]
+            }
+          }
+        },
+        {
+          "name": "Get Invoices by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/status/PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "status", "PENDING"]
+            }
+          }
+        },
+        {
+          "name": "Get Invoices by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/date-range?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "date-range"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Approval Invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/pending-approval",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "pending-approval"]
+            }
+          }
+        },
+        {
+          "name": "Get Total Amount by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/total-amount/PAID",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "total-amount", "PAID"]
+            }
+          }
+        },
+        {
+          "name": "Create Invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceId\": \"{{$randomInt}}\",\n  \"clientName\": \"ABC Company Ltd\",\n  \"amount\": 5000.00,\n  \"invoiceDate\": \"2024-01-15\",\n  \"description\": \"Professional services for Q1 2024 project development and consultation\",\n  \"paymentStatus\": \"DRAFT\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Invoice created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('invoiceId');",
+                  "    pm.expect(jsonData).to.have.property('clientName');",
+                  "    pm.expect(jsonData).to.have.property('amount');",
+                  "    pm.expect(jsonData.paymentStatus).to.eql('DRAFT');",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('createdInvoiceId', jsonData.id);",
+                  "    pm.collectionVariables.set('createdInvoiceNumber', jsonData.invoiceId);",
+                  "    console.log('Created Invoice ID:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Invoice",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceId\": \"12345\",\n  \"clientName\": \"ABC Company Ltd\",\n  \"amount\": 5500.00,\n  \"invoiceDate\": \"2024-01-15\",\n  \"description\": \"Updated: Professional services for Q1 2024 project development, consultation and additional requirements\",\n  \"paymentStatus\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Payment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/1/status?status=PAID",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "1", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PAID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Approve Invoice",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/1/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "1", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Delete Invoice",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/invoices/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "invoices", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

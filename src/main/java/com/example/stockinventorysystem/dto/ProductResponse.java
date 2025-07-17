@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class ProductResponse {
     private Long id;
     private String code;
-    private String name;
+    private String product;
     private String brand;
     private String category;
     private BigDecimal price;
@@ -35,12 +35,12 @@ public class ProductResponse {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getProduct() {
+        return product;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     public String getBrand() {

@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Employee Attendance API",
+    "description": "API for employee attendance with photo upload",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Add Attendance (with Photo)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "empId", "value": "EMP001", "type": "text" },
+            { "key": "firstName", "value": "John", "type": "text" },
+            { "key": "lastName", "value": "Doe", "type": "text" },
+            { "key": "role", "value": "Staff", "type": "text" },
+            { "key": "inOutTime", "value": "2025-07-17T09:00:00", "type": "text" },
+            { "key": "image", "type": "file" },
+            { "key": "imageDateTime", "value": "2025-07-17T09:00:00", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/attendance",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "attendance"]
+        }
+      }
+    }
+  ]
+}

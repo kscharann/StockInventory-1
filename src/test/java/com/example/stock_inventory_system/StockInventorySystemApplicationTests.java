@@ -1,4 +1,4 @@
-package com.example.stock_inventory_system;
+package com.example.stockinventorysystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

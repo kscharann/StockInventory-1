@@ -1,10 +1,10 @@
 package com.example.stockinventorysystem.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.math.BigDecimal;
 
 public class ProductRequest {
     @NotBlank
@@ -12,7 +12,7 @@ public class ProductRequest {
 
     @NotBlank
     @Size(max = 100)
-    private String name;
+    private String product;
 
     @NotBlank
     @Size(max = 50)
@@ -42,12 +42,12 @@ public class ProductRequest {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getProduct() {
+        return product;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     public String getBrand() {

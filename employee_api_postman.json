@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "Employee API - Stock Inventory System",
+    "_postman_id": "d4e74691-2d7e-46a9-a1a4-employeeapi001",
+    "description": "Postman Collection for EmployeeController endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Employees",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/employees",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees"]
+        }
+      }
+    },
+    {
+      "name": "Get Employee by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/employees/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees", "1"]
+        }
+      }
+    },
+    {
+      "name": "Get Employee by EmpId",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/employees/emp/EMP001",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees", "emp", "EMP001"]
+        }
+      }
+    },
+    {
+      "name": "Create New Employee",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"empId\": \"EMP001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"Developer\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/employees",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees"]
+        }
+      }
+    },
+    {
+      "name": "Update Employee by ID",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"role\": \"Manager\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/employees/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Employee by ID",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/api/employees/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees", "1"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

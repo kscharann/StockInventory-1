@@ -1,0 +1,270 @@
+{
+  "info": {
+    "name": "Invoice API - Quick Test",
+    "description": "Quick test collection for Invoice APIs with sample data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/signin",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "signin"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    pm.collectionVariables.set('authToken', response.token);",
+              "    console.log('✅ Login successful, token saved');",
+              "} else {",
+              "    console.log('❌ Login failed:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Create Sample Invoice",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"invoiceId\": \"{{$randomInt}}\",\n  \"clientName\": \"Demo Client Corp\",\n  \"amount\": 2500.50,\n  \"invoiceDate\": \"2024-01-15\",\n  \"description\": \"Demo invoice for testing API functionality - includes consultation and development services\",\n  \"paymentStatus\": \"DRAFT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/invoices",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "invoices"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const invoice = pm.response.json();",
+              "    pm.collectionVariables.set('demoInvoiceId', invoice.id);",
+              "    pm.collectionVariables.set('demoInvoiceNumber', invoice.invoiceId);",
+              "    console.log('✅ Invoice created:', invoice.invoiceId);",
+              "} else {",
+              "    console.log('❌ Invoice creation failed:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Get All Invoices",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/invoices",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "invoices"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const invoices = pm.response.json();",
+              "    console.log('✅ Found', invoices.length, 'invoices');",
+              "    invoices.forEach(inv => {",
+              "        console.log('  -', inv.invoiceId, '|', inv.clientName, '|', inv.amount, '|', inv.paymentStatus);",
+              "    });",
+              "} else {",
+              "    console.log('❌ Failed to get invoices:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Update Payment Status to PENDING",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/invoices/{{demoInvoiceId}}/status?status=PENDING",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "invoices", "{{demoInvoiceId}}", "status"],
+          "query": [
+            {
+              "key": "status",
+              "value": "PENDING"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const invoice = pm.response.json();",
+              "    console.log('✅ Status updated to:', invoice.paymentStatus);",
+              "} else {",
+              "    console.log('❌ Status update failed:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Approve Invoice",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/invoices/{{demoInvoiceId}}/approve",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "invoices", "{{demoInvoiceId}}", "approve"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const invoice = pm.response.json();",
+              "    console.log('✅ Invoice approved by:', invoice.approvedBy);",
+              "    console.log('✅ Status:', invoice.paymentStatus);",
+              "} else {",
+              "    console.log('❌ Approval failed:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Get Invoices by Status (APPROVED)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/invoices/status/APPROVED",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "invoices", "status", "APPROVED"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const invoices = pm.response.json();",
+              "    console.log('✅ Found', invoices.length, 'approved invoices');",
+              "} else {",
+              "    console.log('❌ Failed to get approved invoices:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Get Total Amount for APPROVED",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/invoices/total-amount/APPROVED",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "invoices", "total-amount", "APPROVED"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    console.log('✅ Total amount calculation:', response.message);",
+              "} else {",
+              "    console.log('❌ Failed to get total amount:', pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

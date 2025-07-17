@@ -60,6 +60,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/test/**").permitAll()
+                    .requestMatchers("/uploads/**").permitAll()
+                    .requestMatchers("/api/purchases/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                    .requestMatchers("/api/attendance/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
                     .anyRequest().authenticated()
             );
         
